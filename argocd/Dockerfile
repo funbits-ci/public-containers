@@ -1,8 +1,8 @@
-FROM argoproj/argocd:v2.2.0
+FROM argoproj/argocd:v2.2.2
 
 USER root
 
-ENV KBLD_URL=https://github.com/vmware-tanzu/carvel-kbld/releases/download/v0.30.0/kbld-linux-amd64
+ENV KBLD_URL=https://github.com/vmware-tanzu/carvel-kbld/releases/download/v0.32.0/kbld-linux-amd64
 
 ADD https://dl.yarnpkg.com/debian/pubkey.gpg /tmp/pubkey.gpg
 RUN apt-key add /tmp/pubkey.gpg
