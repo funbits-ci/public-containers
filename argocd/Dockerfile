@@ -1,4 +1,4 @@
-FROM argoproj/argocd:v2.1.7
+FROM argoproj/argocd:v2.2.0
 
 USER root
 
