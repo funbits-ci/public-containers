@@ -100,6 +100,6 @@ USER $USERNAME
 WORKDIR /home/workspace/
 
 
-EXPOSE 3000
+EXPOSE 3030
 
-ENTRYPOINT [ "/bin/sh", "-c", "exec ${OPENVSCODE_SERVER_ROOT}/server.sh --port 3000 \"${@}\"", "--" ]
+ENTRYPOINT [ "/bin/sh", "-c", "exec ${OPENVSCODE_SERVER_ROOT}/server.sh --port 3030 \"${@}\"", "--" ]
