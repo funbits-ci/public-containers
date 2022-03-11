@@ -1,9 +1,9 @@
-FROM debian:buster
-FROM gcr.io/kaniko-project/executor:v1.7.0-debug as kaniko
-FROM harbor.beyond.cc/bitspire-public/nix:2.3.15
+FROM debian:bullseye
+FROM gcr.io/kaniko-project/executor:v1.8.0-debug as kaniko
+FROM harbor.beyond.cc/bitspire-public/nix:2.7.0
 
 RUN apt update && \
-    apt install -y procps curl vim git wget sudo && \
+    apt install -y procps curl vim git wget sudo cmake && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /home/
@@ -59,7 +59,7 @@ ENV DOCKER_CONFIG /kaniko/.docker/
 
 RUN cp /kaniko/ssl/certs/* /etc/ssl/
 
-RUN nix-channel --add https://github.com/NixOS/nixpkgs/archive/fce0206462cd8b80eaca59542d0c53713044050f.tar.gz nixos-unstable-2021-06-12
+RUN nix-channel --add https://github.com/NixOS/nixpkgs/archive/be5272250926e352427b3c62c6066a95c6592375.tar.gz nixos-unstable-2021-12-27
 RUN nix-channel --update
 
 
@@ -69,14 +69,15 @@ RUN mkdir /opt/scala
 # Run needed programs to force caching and print their version
 RUN nix-shell /opt/shell.nix --run "cd /tmp && java -version"; \
     nix-shell /opt/shell.nix --run "cd /tmp && amm -c 'println(700 + 7)'"; \
-    nix-shell /opt/shell.nix --run "cd /tmp && sbt --version"; \
+    nix-shell /opt/shell.nix --run "cd /tmp && sbt -v --version"; \
     nix-shell /opt/shell.nix --run "cd /tmp && kubectl version --client=true"; \
     nix-shell /opt/shell.nix --run "cd /tmp && node --version";
 
 RUN cp -r /root/.nix-* /home/workspace
 RUN cp /root/.profile /home/workspace
 RUN chown -R $USER_UID:$USER_GID /home/workspace
-RUN chown -R $USER_UID:$USER_GID /nix
+RUN chown $USER_UID:$USER_GID /nix && chown $USER_UID:$USER_GID /nix/* \
+    && chown -R $USER_UID:$USER_GID /nix/var
 
 RUN wget https://github.com/facebook/watchman/releases/download/v2021.12.06.00/watchman-v2021.12.06.00-linux.zip \
     && unzip watchman-v2021.12.06.00-linux.zip \
@@ -93,13 +94,13 @@ ENV LANG=C.UTF-8 \
     HOME=/home/workspace \
     EDITOR=code \
     VISUAL=code \
-    GIT_EDITOR="code --wait" \
+    GIT_EDITOR="vim" \
     OPENVSCODE_SERVER_ROOT=${OPENVSCODE_SERVER_ROOT}
 
 USER $USERNAME
 WORKDIR /home/workspace/
 
-
 EXPOSE 3030
 
 ENTRYPOINT [ "/bin/sh", "-c", "exec ${OPENVSCODE_SERVER_ROOT}/server.sh --port 3030 \"${@}\"", "--" ]
+

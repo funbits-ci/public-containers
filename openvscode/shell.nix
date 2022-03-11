@@ -1,12 +1,15 @@
+{ jdk ? "jdk11" }:
+
 let
 
   nixpkgs = builtins.fetchTarball {
-    name   = "nixos-unstable-2021-06-12";
-    url    = "https://github.com/NixOS/nixpkgs/archive/fce0206462cd8b80eaca59542d0c53713044050f.tar.gz";
-    sha256 = "0j0n5mr1jxxk6ib7q8v44cvnpq29bfp5b2mhy5f4sr76swiacnbf";
+    name   = "nixos-unstable-2021-12-27";
+    url    = "https://github.com/NixOS/nixpkgs/archive/be5272250926e352427b3c62c6066a95c6592375.tar.gz";
+    sha256 = "0rda00l8rdf0a4pdsflg0h7dx6hd52291ymcqv1wljzs9k5zsy7i";
   };
 
-  pkgs = import nixpkgs {};
+  config = import ./config.nix { inherit jdk; };
+  pkgs      = import nixpkgs { inherit config; };
 
 in
 
