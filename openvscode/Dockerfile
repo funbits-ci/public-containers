@@ -59,19 +59,13 @@ ENV DOCKER_CONFIG /kaniko/.docker/
 
 RUN cp /kaniko/ssl/certs/* /etc/ssl/
 
-RUN nix-channel --add https://github.com/NixOS/nixpkgs/archive/be5272250926e352427b3c62c6066a95c6592375.tar.gz nixos-unstable-2021-12-27
-RUN nix-channel --update
-
 
 COPY *.nix /opt/
+COPY nix /opt/nix
 RUN mkdir /opt/scala
 
 # Run needed programs to force caching and print their version
-RUN nix-shell /opt/shell.nix --run "cd /tmp && java -version"; \
-    nix-shell /opt/shell.nix --run "cd /tmp && amm -c 'println(700 + 7)'"; \
-    nix-shell /opt/shell.nix --run "cd /tmp && sbt -v --version"; \
-    nix-shell /opt/shell.nix --run "cd /tmp && kubectl version --client=true"; \
-    nix-shell /opt/shell.nix --run "cd /tmp && node --version";
+RUN cd /opt && nix-build /opt/shell.nix
 
 RUN cp -r /root/.nix-* /home/workspace
 RUN cp /root/.profile /home/workspace
@@ -102,5 +96,5 @@ WORKDIR /home/workspace/
 
 EXPOSE 3030
 
-ENTRYPOINT [ "/bin/sh", "-c", "exec ${OPENVSCODE_SERVER_ROOT}/server.sh --port 3030 \"${@}\"", "--" ]
+ENTRYPOINT [ "/bin/sh", "-c", "exec ${OPENVSCODE_SERVER_ROOT}/bin/openvscode-server --host 0.0.0.0 --port 3030 \"${@}\"", "--" ]
 
