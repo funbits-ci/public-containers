@@ -39,7 +39,7 @@ in rec {
 
   nodeImage = pkgs.dockerTools.buildLayeredImage {
     name = "node";
-    contents = [ pkgs.nodejs-17_x pkgs.yarn ];
+    contents = [ pkgs.nodejs-16_x pkgs.yarn ];
   };
 
   scalaImage = pkgs.dockerTools.buildLayeredImage {
@@ -74,7 +74,7 @@ in rec {
     extraCommands = ''
         mkdir -p tmp
       '';
-    contents = with pkgs; [ nodejs-17_x yarn kustomize pulumi-bin
+    contents = with pkgs; [ nodejs-16_x yarn kustomize pulumi-bin
                             python3 gcc cmake curl git jdk11 sbt
 			    kubectl pwgen ripgrep argocd skopeo
 			    kubectx postgresql flyway k9s nix];

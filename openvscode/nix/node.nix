@@ -2,7 +2,7 @@
 }:
 
 with project.pkgs; [
-      nodejs-17_x
+      nodejs-16_x
       yarn
       python3
       kustomize

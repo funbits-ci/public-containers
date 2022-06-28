@@ -1,6 +1,6 @@
 FROM debian:bullseye
-FROM gcr.io/kaniko-project/executor:v1.8.0-debug as kaniko
-FROM harbor.beyond.cc/bitspire-public/nix:2.7.0
+FROM gcr.io/kaniko-project/executor:v1.8.1-debug as kaniko
+FROM harbor.beyond.cc/bitspire-public/nix:2.9.1
 
 RUN apt update && \
     apt install -y procps curl vim git wget sudo cmake && \
@@ -66,6 +66,7 @@ RUN mkdir /opt/scala
 
 # Run needed programs to force caching and print their version
 RUN cd /opt && nix-build /opt/shell.nix
+RUN nix-env -iA nixpkgs.jdk11
 
 RUN cp -r /root/.nix-* /home/workspace
 RUN cp /root/.profile /home/workspace
